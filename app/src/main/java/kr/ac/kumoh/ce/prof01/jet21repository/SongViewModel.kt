@@ -7,20 +7,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kr.ac.kumoh.ce.prof01.jet21repository.pocketbase.SongPocketRepository
 import kr.ac.kumoh.ce.prof01.jet21repository.room.SongRoomRepository
 
 class SongViewModel(application: Application) : AndroidViewModel(application) {
+    private lateinit var repository: SongRepository
+
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>>
         get() = _songs
 
-    //private var repository: SongRepository = SongRoomRepository
-    private var repository: SongRepository = SongPocketRepository
 
     init {
-        repository.initRepository(application.applicationContext)
-        //add("소주 한 잔", "임창정")
+        setRepository(SongRoomRepository)
+    }
+
+    fun setRepository(repo: SongRepository) {
+        repository = repo
+        repository.initRepository(getApplication())
         select()
     }
 
